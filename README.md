@@ -2,6 +2,9 @@
 
 ## Project Overview
 
+Kemajuan teknologi digital telah mempermudah akses terhadap berbagai bentuk hiburan, seperti film, musik, serial TV, dan anime, melalui platform streaming yang menyediakan konten beragam. Anime, sebagai salah satu industri hiburan global, menunjukkan pertumbuhan signifikan sejak dekade 2010-an. Pada 2017, industri anime Jepang mencatat rekor penjualan sebesar ¥2,15 triliun (sekitar $19,8 miliar), yang sebagian besar didorong oleh permintaan dari penonton internasional. Pada 2019, nilai industri ini mencapai $24 miliar per tahun, dengan 48% pendapatan berasal dari pasar luar negeri, menjadikan anime sebagai salah satu sektor industri terbesar di Jepang [[1](https://edition.cnn.com/style/article/japan-anime-global-identity-hnk-intl)]. Data ini menunjukkan popularitas anime sebagai salah satu konten paling diminati di platform digital saat ini.
+
+Meskipun popularitas anime sering dipengaruhi oleh tren, promosi, atau dinamika komunitas, faktor-faktor tersebut tidak selalu mencerminkan preferensi pribadi penonton. Baik penggemar baru maupun lama sering kali kesulitan menemukan anime yang sesuai dengan minat mereka, terutama ketika dihadapkan pada rekomendasi umum atau daftar tontonan yang sedang viral. Situs seperti MyAnimeList menyediakan informasi dan ulasan, namun pendekatan ini masih memerlukan eksplorasi manual yang memakan waktu. Oleh karena itu, diperlukan sistem rekomendasi yang dapat memberikan saran tontonan secara personal dan relevan berdasarkan karakteristik serta preferensi pengguna, bukan semata-mata mengandalkan popularitas suatu judul.
 
 
 <!-- Pada bagian ini, Kamu perlu menuliskan latar belakang yang relevan dengan proyek yang diangkat.
@@ -74,6 +77,8 @@ Dataset ini berisi informasi deskriptif mengenai judul anime dan memiliki **12.0
 | rating    | Numerik (float)           | Skor rata-rata pengguna                     |
 | members   | Numerik (int)             | Jumlah user yang memasukkan anime ke daftar |
 
+Tabel 1. Struktur data anime.csv
+
 #### **2. rating.csv**
 
 Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7.813.737 baris dan 3 kolom**.
@@ -84,6 +89,7 @@ Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7.813.737 b
 | anime\_id | Numerik (int) | ID anime yang diberi rating                        |
 | rating    | Numerik (int) | Nilai rating dari 1–10, `-1` jika belum ada rating |
 
+Tabel 2. Struktur data rating.csv
 
 ---
 
@@ -101,6 +107,7 @@ Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7.813.737 b
 | rating    | 230           |
 | members   | 0              |
 
+Tabel 3. Nilai hilang pada dataset anime.csv
 
 #### **rating.csv**
 
@@ -109,6 +116,8 @@ Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7.813.737 b
 | user\_id  | 0              |
 | anime\_id | 0              |
 | rating    | 0              |
+
+Tabel 4. Nilai hilang pada dataset rating.csv
 
 **Kesimpulan**: Pada anime.csv, missing value ditemukan pada `genre`, `type` dan `rating`, sehingga nantinya dilakukan penghapusan baris yang mengandung missing value untuk menjaga kualitas analisis. Pada rating.csv tidak ditemukan missing value
 
@@ -123,6 +132,8 @@ Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7.813.737 b
 | rating  | 6.48   | 6.57   | 1.67 | 10.00     |
 | members | 18.348 | 1.552  | 12   | 1.013.917 |
 
+Tabel 5. Deskripsi Statistik pada dataset anime.csv
+
 > Menunjukkan distribusi rating cukup normal dengan kecenderungan mendekati 7, serta menunjukkan bahwa sebagian besar anime memiliki jumlah anggota komunitas yang relatif kecil dibandingkan beberapa judul yang sangat populer.
 
 #### **rating.csv**
@@ -131,13 +142,23 @@ Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7.813.737 b
 | ------ | ---- | ------ | ---- | ---- |
 | rating | 6.14 | 7.00   | -1.0 | 10.0 |
 
+Tabel 6. Deskripsi Statistik pada dataset rating.csv
+
 > Rating dari pengguna menunjukkan kecenderungan positif, dengan mayoritas rating berada di antara 6 dan 9.
 
 ---
 ### 📊 Tren Data
 ![download](https://github.com/user-attachments/assets/0d316847-385e-49df-85c9-3ec4df1427c8)
+
+Gambar 1. Histogram anime berdasarkan _type_
+
 ![download](https://github.com/user-attachments/assets/4431cc6e-c70a-4e90-9b75-6eac4895c52b)
+
+Gambar 2. Diagram batang popularitas anime berdasarkan _genre_
+
 ![download](https://github.com/user-attachments/assets/d66e98ec-8e80-41f6-9c99-24b77266aa33)
+
+Gambar 3. Diagram batang popularitas 10 judul anime berdasarkan jumlah penonton
 
 
 - TV series mendominasi produksi anime, tetapi OVA dan film juga tetap signifikan.
@@ -185,6 +206,7 @@ Setelah penggabungan, kolom rating_x dan rating_y diganti namanya menjadi Averag
 | user\_id       | ID pengguna                     |
 | rating\_user   | Rating yang diberikan oleh user |
 
+Tabel 7. Dataset anime_rating.csv
 
 ### Mengatasi *missing value*
 
@@ -239,6 +261,7 @@ Fungsi `Rekomendasi_anime(anime_name, top_n=10)` dibuat untuk menghasilkan dafta
 Kemudian didapat Top N recommendation dari anime
 ![image](https://github.com/user-attachments/assets/2bd36d8a-e59f-431a-8f36-33823d14217a)
 
+Gambar 4. Top N recommendation model Content Based recomendation
 
 #### Kelebihan
 - Mudah Diimplementasikan: Menggunakan pustaka seperti scikit-learn menjadikan metode ini sederhana dan cepat diterapkan.
@@ -279,7 +302,9 @@ Model RecommenderNet, yaitu custom TensorFlow Keras model yang terdiri dari dua 
 Model ini menganalisis penilaian pengguna sebelumnya untuk mengenali pola preferensi serta karakteristik anime yang disukai. Berdasarkan informasi tersebut, model dapat merekomendasikan anime yang serupa dengan yang pernah disukai pengguna, atau yang diminati oleh pengguna lain dengan selera yang sejenis.
 
 Berikut top-N anime yang direkomendasikan
+![image](https://github.com/user-attachments/assets/e780493e-9c6c-4d15-af0a-37e088085e25)
 
+Gambar 5. Top N recommendation model Collaborative Filtering Recommendation
 
 #### Kelebihan
 - Personalisasi Tinggi: Rekomendasi disesuaikan dengan pola preferensi individual.
@@ -341,22 +366,23 @@ Akar Kuadrat: Terakhir, kita ambil akar kuadrat dari hasil rata-rata selisih kua
 
 Setelah dilakukan evaluasi pada data validasi, diperoleh hasil:
 
-* RMSE: 0.1234
-* MAE: 0.0897
+* RMSE: 0.2747
+* MAE: 0.2192
 
 Nilai RMSE dan MAE yang relatif kecil ini menunjukkan model mampu memprediksi rating dengan tingkat akurasi yang baik. Model dapat memahami preferensi pengguna dan memberikan rekomendasi anime yang sesuai dengan minat mereka.
 
 
-## Conclusion
-Genre anime apa saja yang paling diminati oleh pemirsa?
-Bagaimana memberikan rekomendasi anime berdasarkan preferensi pemirsa?
-Bagaimana membuat model rekomendasi anime berdasarkan preferensi pemirsa?
-1. Berdasarkan data yang diperoleh dapat diketahui genre-genre anime yang paling diminati oleh pemirsa yaitu Action, Comedy, Drama, Romance, Shounen, Fantasy, Sci-Fi, Adventure
-2. Dengan menggunakan collaborative filtering - user based, sistem rekomendasi dapat memberikan rekemondasi anime yang sesuai dengan referensi pemirsa.
-3. Setelah menguji data dengan menggunakan algoritma Singular value decomposition (SVD) dan melakukan evaluasi terhadap model, sistem rekemondasi yang dibuat dapat memberikan top N anime yang sesuai dengan preferensi pengguna
+## Kesimpulan
+- Genre anime apa saja yang paling diminati oleh pemirsa?
+- Bagaimana merekomendasikan anime kepada pengguna berdasarkan preferensi pengguna?
+- Bagaimana merekomendasikan anime berdasarkan genre dengan anime yang disukai pengguna?
+  
+1. Berdasarkan data yang diperoleh dapat diketahui genre-genre anime yang paling diminati oleh pemirsa yaitu Hentai, Comedy, Music, Kids, Slice of Lice, Dementia.
+2. Penerapan metode collaborative filtering berbasis pengguna memungkinkan sistem rekomendasi memberikan rekemondasi anime yang sesuai dengan referensi pemirsa.
+3. Melalui pendekatan content-based recommendation, sistem dapat merekomendasikan anime berdasarkan kemiripan genre.
 
 ## References
-[1] . Fennell, D., Liberato, A. S. Q., Hayden, B., & Fujino, Y. (2013). Consuming Anime. Television & New Media, 14(5), 440-456. https://doi.org/10.1177/1527476412436986
+[1] . Jozuka, E. (2019). Japanese anime: From ‘Disney of the East’ to a global industry worth billions. CNN. Diakses dari https://edition.cnn.com/style/article/japan-anime-global-identity-hnk-intl
 
 [2]. Sckit-Learn, diakses 25 November 2024, https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.MultiLabelBinarizer.html
 
