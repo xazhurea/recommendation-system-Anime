@@ -65,23 +65,23 @@ Dataset yang digunakan untuk membangun sistem rekomendasi anime ini bersumber da
 ### 📁 Struktur Dataset
 
 #### **1. anime.csv**
-Dataset ini berisi informasi deskriptif mengenai judul anime dan memiliki **12.017 baris dan 7 kolom**.
+Dataset ini berisi informasi deskriptif mengenai judul anime dan memiliki **12294 baris dan 7 kolom**.
 
 | Kolom     | Tipe Data                 | Keterangan                                  |
 | --------- | ------------------------- | ------------------------------------------- |
-| anime\_id | Numerik (int)             | ID unik untuk tiap anime                    |
-| name      | Kategorikal (string)      | Judul anime                                 |
-| genre     | Kategorikal (string/list) | Daftar genre (dipisahkan koma)              |
-| type      | Kategorikal (string)      | Tipe anime (TV, Movie, OVA, dll)            |
-| episodes  | Numerik (int)             | Jumlah episode                              |
-| rating    | Numerik (float)           | Skor rata-rata pengguna                     |
-| members   | Numerik (int)             | Jumlah user yang memasukkan anime ke daftar |
+| anime\_id | Numerik             | ID unik untuk tiap anime                    |
+| name      | Kategorikal       | Judul anime                                 |
+| genre     | Kategorikal  | Daftar genre (dipisahkan koma)              |
+| type      | Kategorikal      | Tipe anime (TV, Movie, OVA, dll)            |
+| episodes  | Numerik             | Jumlah episode                              |
+| rating    | Numerik          | Skor rata-rata pengguna                     |
+| members   | Numerik           | Jumlah user yang memasukkan anime ke daftar |
 
 Tabel 1. Struktur data anime.csv
 
 #### **2. rating.csv**
 
-Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7.813.737 baris dan 3 kolom**.
+Dataset ini berisi interaksi pengguna terhadap anime, dengan total **73515 baris dan 3 kolom**.
 
 | Kolom     | Tipe Data     | Keterangan                                         |
 | --------- | ------------- | -------------------------------------------------- |
@@ -119,7 +119,7 @@ Tabel 3. Nilai hilang pada dataset anime.csv
 
 Tabel 4. Nilai hilang pada dataset rating.csv
 
-**Kesimpulan**: Pada anime.csv, missing value ditemukan pada `genre`, `type` dan `rating`, sehingga nantinya dilakukan penghapusan baris yang mengandung missing value untuk menjaga kualitas analisis. Pada rating.csv tidak ditemukan missing value
+**Kesimpulan**: Pada anime.csv, missing value ditemukan pada `genre`, `type` dan `rating`, sehingga nantinya akan dilakukan penghapusan baris yang mengandung missing value untuk menjaga kualitas analisis. Pada rating.csv tidak ditemukan missing value
 
 ---
 
@@ -127,10 +127,10 @@ Tabel 4. Nilai hilang pada dataset rating.csv
 
 #### **anime.csv (Setelah pembersihan)**
 
-| Kolom   | Mean   | Median | Min  | Max       |
-| ------- | ------ | ------ | ---- | --------- |
-| rating  | 6.48   | 6.57   | 1.67 | 10.00     |
-| members | 18.348 | 1.552  | 12   | 1.013.917 |
+| Kolom   |   Mean   | Median | Min  | Max       |
+| ------- | -------- | ------ | ---- | --------- |
+| rating  | 6.473902 | 6.57   | 1.67 | 10.00     |
+| members |  18.348  | 1.552  | 12   | 1.013.917 |
 
 Tabel 5. Deskripsi Statistik pada dataset anime.csv
 
