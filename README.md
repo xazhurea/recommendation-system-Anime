@@ -422,8 +422,8 @@ Sistem rekomendasi menunjukkan kesesuaian genre yang sangat baik (Precision genr
 
 Sementara evaluasi model Collaborative Filtering pada data validasi, diperoleh hasil:
 
-* RMSE: 0.2747
-* MAE: 0.2192
+* RMSE: 0.2748
+* MAE: 0.2193
 
 Nilai RMSE dan MAE yang relatif kecil ini menunjukkan model mampu memprediksi rating dengan tingkat akurasi yang baik. Model dapat memahami preferensi pengguna dan memberikan rekomendasi anime yang sesuai dengan minat mereka.
 
