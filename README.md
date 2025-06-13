@@ -81,7 +81,7 @@ Tabel 1. Struktur data anime.csv
 
 #### **2. rating.csv**
 
-Dataset ini berisi interaksi pengguna terhadap anime, dengan total **73515 baris dan 3 kolom**.
+Dataset ini berisi interaksi pengguna terhadap anime, dengan total **7813737 baris dan 3 kolom**.
 
 | Kolom     | Tipe Data     | Keterangan                                         |
 | --------- | ------------- | -------------------------------------------------- |
