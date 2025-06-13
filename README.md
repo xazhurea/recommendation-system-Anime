@@ -440,6 +440,6 @@ Nilai RMSE dan MAE yang relatif kecil ini menunjukkan model mampu memprediksi ra
 ## References
 [1] . Jozuka, E. (2019). Japanese anime: From ‘Disney of the East’ to a global industry worth billions. CNN. Diakses dari https://edition.cnn.com/style/article/japan-anime-global-identity-hnk-intl
 
-[2]. Sckit-Learn, diakses 25 November 2024, https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.MultiLabelBinarizer.html
+[2]. Sckit-Learn, diakses 5 Juni 2025, https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.MultiLabelBinarizer.html
 
-[3]. Denise Chen, diakses 25 November 2024, https://towardsdatascience.com/recommender-system-singular-value-decomposition-svd-truncated-svd-97096338f361
+[3]. Denise Chen, diakses 5 Juni 2025, https://towardsdatascience.com/recommender-system-singular-value-decomposition-svd-truncated-svd-97096338f361
