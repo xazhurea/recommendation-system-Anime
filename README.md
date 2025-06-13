@@ -223,6 +223,42 @@ Dataset hasil penggabungan memiliki 1 baris duplikat. Hal ini diatasi dengan men
 ### Mengubah value pada kolom rating_user
 Dalam dataset rating.csv, nilai -1 pada kolom rating digunakan untuk menandai bahwa user belum memberikan rating pada suatu anime. Nilai ini diubah menjadi 0 karena nilai 0 mencerminkan "belum memberi rating", sehingga dapat dibedakan dari rating nyata (1–10) saat melakukan analisis atau training model.
 
+#### Data untuk CBF
+Karena model Content Based Recomendation menggunakan TF-IDF untuk mentransformasikan  teks menjadi representasi angka maka kita membuat data salinan data untuk model ini dengan adalah menyusun data yang relevan. Data yang digunakan terdiri dari kolom:
+- `anime_id`
+- `name` 
+- `genre` 
+- `AverageRating`
+
+#### Ekstraksi Fitur Genre dengan TF-IDF
+TF-IDF Vectorizer digunakan pada model Content Based Recomendation yang akan mentransformasikan teks menjadi representasi angka yang memiliki makna tertentu dalam bentuk matriks. 
+Hal ini perlu dilakukan untuk melakukan perhitungan dan analisis terhadap teks maka teks tersebut di transformasikan kedalam bentuk angka.Genre dari masing-masing anime diubah menjadi vektor numerik menggunakan teknik TF-IDF, yang memungkinkan untuk mengukur seberapa penting suatu genre dalam koleksi anime.
+- TF-IDF diterapkan dengan tokenizer berbasis pemisah koma ', ', agar setiap genre dikenali sebagai token individual.
+- Hasil vektorisasi menghasilkan 43 fitur unik genre, seperti 'action', 'drama', 'romance', 'sci-fi', 'supernatural', dan sebagainya.
+- Dimensi hasil TF-IDF matrix adalah (11162, 43).
+
+Output menunjukkan bagaimana setiap anime memiliki skor representasi (bobot TF-IDF) terhadap genre-genre tertentu, yang kemudian menjadi dasar perhitungan kemiripan.
+
+#### Filter Rating
+Filter rating digunakan pada dataset untuk model Collaborative Filtering Recommendation, data difilter untuk hanya menyertakan rating ≥ 7, agar model fokus pada preferensi positif.
+
+#### Encoding
+Encoding dilakukan terhadap ID pengguna dan ID anime untuk mengubahnya menjadi representasi numerik berurutan. Proses ini diperlukan agar setiap entitas dapat dikenali sebagai indeks oleh embedding layer dalam model TensorFlow.
+
+#### Normalisasi
+Sementara itu, nilai rating dinormalisasi ke dalam rentang 0–1 untuk menyesuaikan dengan fungsi aktivasi sigmoid pada layer output. Dengan demikian, nilai prediksi yang dihasilkan oleh model berada dalam skala yang sama dengan target, sehingga proses pelatihan dapat berlangsung secara optimal
+
+#### Pembagian Dataset
+Dalam membangun model pembelajaran mesin, dataset perlu dibagi menjadi dua bagian utama:
+
+- **Data Latih:** Digunakan untuk melatih model. Model akan mempelajari pola dan hubungan antara fitur dan target dalam data latih ini.
+- **Data validasi:** Digunakan untuk menguji kinerja model yang telah dilatih. Model akan memprediksi nilai pada data uji, dan hasilnya akan dibandingkan dengan nilai sebenarnya untuk mengevaluasi seberapa baik model tersebut bekerja pada data yang belum pernah dilihat sebelumnya.
+
+Pada proyek ini dataset dibagi 80:20. Pembagian data dengan perbandingan 80:20 adalah salah satu cara yang umum digunakan, artinya 80% data akan digunakan untuk melatih model dan 20% sisanya untuk menguji model.
+
+Alasan utama pembagian dataset adalah untuk mengukur kemampuan generalisasi model, yaitu seberapa baik model dapat memprediksi data baru yang belum pernah dilihat sebelumnya. Dengan memisahkan sebagian data sebagai data validasi, dapat mengevaluasi apakah model mengalami overfitting (terlalu cocok dengan data latih) atau tidak, dan memastikan bahwa performanya stabil saat digunakan.
+
+
 <!-- Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
 
 **Rubrik/Kriteria Tambahan (Opsional)**: 
@@ -232,24 +268,10 @@ Dalam dataset rating.csv, nilai -1 pada kolom rating digunakan untuk menandai ba
 
 ## Modeling
 
-### Content Based recomendation
-Dengan menggunakan TF-IDF Vectorizer data teks ditransformasikan menjadi representasi angka yang memiliki makna terntentu kedalam bentuk matriks. Selanjutnya matriks tersebut akan dihitung derajat kesamaanya dengan menggunakan Cosine Similarity antar judul dari anime. Langkah-langkahnya adalah sebagai berikut.
+### Content Based Recomendation
+Model akan memberikan rekomendasi dengan cara mengukur tingkat kemiripan antar-anime berdasarkan kesamaan genre. Caranya adalah dengan menggunakan TF-IDF Vectorizer, di mana data teks genre ditransformasikan menjadi representasi numerik bermakna dalam bentuk matriks. Selanjutnya, matriks tersebut dihitung derajat kesamaannya menggunakan Cosine Similarity antar judul anime.
 
-#### Persiapan Data
-Langkah awal dalam pengembangan sistem rekomendasi berbasis konten (content-based filtering) adalah menyusun data yang relevan. Data yang digunakan terdiri dari kolom:
-- `anime_id`
-- `name` (judul anime)
-- `genre` (daftar genre dipisah koma)
-- `AverageRating`
-
-#### Ekstraksi Fitur Genre dengan TF-IDF
-TF-IDF Vectorizer akan mentransformasikan teks menjadi representasi angka yang memiliki makna tertentu dalam bentuk matriks. 
-Hal ini perlu dilakukan untuk melakukan perhitungan dan analisis terhadap teks maka teks tersebut di transformasikan kedalam bentuk angka.Genre dari masing-masing anime diubah menjadi vektor numerik menggunakan teknik TF-IDF, yang memungkinkan untuk mengukur seberapa penting suatu genre dalam koleksi anime.
-- TF-IDF diterapkan dengan tokenizer berbasis pemisah koma ', ', agar setiap genre dikenali sebagai token individual.
-- Hasil vektorisasi menghasilkan 43 fitur unik genre, seperti 'action', 'drama', 'romance', 'sci-fi', 'supernatural', dan sebagainya.
-- Dimensi hasil TF-IDF matrix adalah (11162, 43).
-
-Contoh output menunjukkan bagaimana setiap anime memiliki skor representasi (bobot TF-IDF) terhadap genre-genre tertentu, yang kemudian menjadi dasar perhitungan kemiripan.
+Untuk mengimplementasikan proses rekomendasi ini, dibuat sebuah fungsi bernama Rekomendasi_anime yang menerima input berupa judul anime dan jumlah rekomendasi yang diinginkan (top-N). Fungsi ini akan mencari anime yang paling mirip berdasarkan skor kemiripan dan mengembalikan daftar judul anime yang direkomendasikan, beserta informasi genre dan rata-rata rating-nya.
 
 #### Cosine Similarity
 Untuk mengukur kemiripan antar anime, digunakan cosine similarity terhadap TF-IDF matrix. Matriks kemiripan cosine_sim berukuran (11162, 11162) yang menyatakan nilai kemiripan antara semua kombinasi pasangan anime.
@@ -273,35 +295,27 @@ Gambar 4. Top N recommendation model Content Based recomendation
 
 
 ### Collaborative Filtering Recommendation
-Metode paling umum untuk sistem rekomendasi sering kali dilengkapi dengan Collaborating Filtering (CF) yang mengandalkan kumpulan data pengguna dan item sebelumnya. adalah model faktor laten, yang mengekstraksi fitur dari matriks pengguna dan item [Denise Chen](https://towardsdatascience.com/recommender-system-singular-value-decomposition-svd-truncated-svd-97096338f361).
+Metode paling umum untuk sistem rekomendasi sering kali dilengkapi dengan Collaborating Filtering (CF) yang mengandalkan kumpulan data pengguna dan item sebelumnya. Model ini adalah model faktor laten, yang mengekstraksi fitur dari matriks pengguna dan item [Denise Chen](https://towardsdatascience.com/recommender-system-singular-value-decomposition-svd-truncated-svd-97096338f361). 
 
-Berikut tahapan-tahapannya:
+Setelah proses prapemrosesan dan encoding data selesai, pendekatan Collaborative Filtering (CF) digunakan untuk membangun sistem rekomendasi berbasis user-item interaction. Model yang digunakan merupakan varian dari Neural Collaborative Filtering (NCF), yaitu metode non-linear berbasis deep learning yang mengembangkan pendekatan klasik matrix factorization agar dapat menangkap pola interaksi yang lebih kompleks.
 
-#### Persiapan Data
-- Data difilter untuk hanya menyertakan rating ≥ 7, agar model fokus pada preferensi positif.
-- Untuk menyesuaikan data dengan format yang dibutuhkan oleh model TensorFlow, dilakukan encoding ID pengguna dan anime ke dalam representasi numerik berurutan
-- Nilai rating diskalakan ke rentang 0–1 karena model menggunakan fungsi aktivasi sigmoid pada output, yang menghasilkan prediksi di antara 0 dan 1.
+Model dikembangkan menggunakan TensorFlow Keras custom class RecommenderNet. Arsitektur model terdiri dari:
 
-### Pembagian Dataset
+* Embedding layer untuk user dan anime: masing-masing merepresentasikan pengguna dan anime ke dalam vektor berdimensi 50.
+* Bias embedding: untuk menyesuaikan kecenderungan rating pribadi user dan popularitas anime.
+* Dot product antara vektor user dan anime digunakan untuk menghasilkan skor prediksi interaksi, yang kemudian ditambah dengan bias user dan anime.
+* Activation function: output dari model dibungkus dalam fungsi sigmoid karena target rating telah dinormalisasi ke skala [0, 1].
 
-Dalam membangun model pembelajaran mesin, dataset perlu dibagi menjadi dua bagian utama:
+Model dikompilasi dengan:
 
-- **Data Latih:** Digunakan untuk melatih model. Model akan mempelajari pola dan hubungan antara fitur dan target dalam data latih ini.
-- **Data validasi:** Digunakan untuk menguji kinerja model yang telah dilatih. Model akan memprediksi nilai pada data uji, dan hasilnya akan dibandingkan dengan nilai sebenarnya untuk mengevaluasi seberapa baik model tersebut bekerja pada data yang belum pernah dilihat sebelumnya.
+* Loss function: BinaryCrossentropy
+* Optimizer: Adam dengan learning rate 0.001
+* Evaluation metric: RootMeanSquaredError (RMSE)
 
-Pada proyek ini dataset dibagi 80:20. Pembagian data dengan perbandingan 80:20 adalah salah satu cara yang umum digunakan, artinya 80% data akan digunakan untuk melatih model dan 20% sisanya untuk menguji model.
-
-Alasan utama pembagian dataset adalah untuk mengukur kemampuan generalisasi model, yaitu seberapa baik model dapat memprediksi data baru yang belum pernah dilihat sebelumnya. Dengan memisahkan sebagian data sebagai data validasi, dapat mengevaluasi apakah model mengalami overfitting (terlalu cocok dengan data latih) atau tidak, dan memastikan bahwa performanya stabil saat digunakan.
-
-
-#### Fungsi Model
-Menggunakan model berbasis Neural Collaborative Filtering (NCF), yang merupakan pengembangan dari matrix factorization tradisional namun dengan representasi yang lebih fleksibel dan non-linear. Model ini dirancang untuk mempelajari embedding dari pengguna dan item (anime) menggunakan arsitektur neural network
-
-Model RecommenderNet, yaitu custom TensorFlow Keras model yang terdiri dari dua lapisan embedding (untuk user dan anime). Model ini mampu menangkap interaksi antara pengguna dan anime melalui dot product dari embedding masing-masing entitas.
-
-Model ini menganalisis penilaian pengguna sebelumnya untuk mengenali pola preferensi serta karakteristik anime yang disukai. Berdasarkan informasi tersebut, model dapat merekomendasikan anime yang serupa dengan yang pernah disukai pengguna, atau yang diminati oleh pengguna lain dengan selera yang sejenis.
+Model dilatih selama 20 epoch dengan batch size 128, menggunakan data latih sebesar 80% dari total interaksi user-anime yang telah difilter (hanya rating ≥ 7 yang digunakan untuk menjaga kualitas sinyal preferensi). Validasi dilakukan menggunakan 20% data sisanya.
 
 Berikut top-N anime yang direkomendasikan
+
 ![image](https://github.com/user-attachments/assets/e780493e-9c6c-4d15-af0a-37e088085e25)
 
 Gambar 5. Top N recommendation model Collaborative Filtering Recommendation
@@ -328,8 +342,38 @@ Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, probl
 
 Dalam proyek Collaborative Filtering ini, metrik evaluasi yang digunakan untuk mengukur kinerja model adalah:
 
-**Root Mean Squared Error (RMSE):**
-  RMSE mengukur akar rata-rata dari kuadrat selisih antara rating asli dan rating prediksi. Formula RMSE adalah:
+
+#### **1. Precision\@K**
+Proporsi item relevan (positif) di antara *K* item teratas yang direkomendasikan oleh sistem. Dalam proyek ini precision\@K digunakan untuk mengevaluasi akurasi dari hasil rekomendasi dengan 2 pendekatan yaitu berdasarkan genre dan relevansi dari user (rating tinggi oleh user yang sama). Semakin tinggi nilai precision, semakin tepat rekomendasi yang diberikan.
+
+$$
+\text{Precision@K} = \frac{\text{Jumlah item relevan dalam top K}}{K}
+$$
+
+#### **2. Recall\@K**
+Proporsi item relevan yang berhasil ditangkap oleh sistem dalam *K* item teratas yang direkomendasikan. Metrik ini menunjukkan sejauh mana sistem berhasil merekomendasikan seluruh item yang relevan bagi user. Nilai yang tinggi menunjukkan bahwa sistem mampu mencakup banyak preferensi user.
+
+$$
+\text{Recall@K} = \frac{\text{Jumlah item relevan dalam top K}}{\text{Jumlah total item relevan milik user}}
+$$
+
+
+#### **3. F1-score\@K**
+
+Rata-rata harmonik dari Precision\@K dan Recall\@K, yang merepresentasikan trade-off antara akurasi dan kelengkapan rekomendasi. Metrik kombinasi ini menyeimbangkan antara Precision dan Recall. Metrik ini berguna dalam menilai performa sistem secara keseluruhan tanpa mengutamakan salah satu aspek saja (baik akurasi maupun kelengkapan).
+
+$$
+\text{F1@K} = \frac{2 \cdot \text{Precision@K} \cdot \text{Recall@K}}{\text{Precision@K} + \text{Recall@K}}
+$$
+
+
+
+
+Sementara proyek Collaborative Filtering ini, metrik evaluasi yang digunakan untuk mengukur kinerja model adalah:
+
+#### **1. Root Mean Squared Error (RMSE)**
+
+RMSE mengukur akar rata-rata dari kuadrat selisih antara rating asli dan rating prediksi. Formula RMSE adalah:
 
 $$
 \text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^n (y_i - \hat{y}_i)^2}
@@ -344,8 +388,9 @@ $$
 2. **Hitung Rata-rata:** Setelah mendapatkan semua selisih absolut, kita hitung rata-rata dari semua selisih tersebut. Hasilnya adalah nilai MAE.
 
 
-**Mean Absolute Error (MAE):**
-  MAE menghitung rata-rata dari nilai absolut selisih antara rating asli dan prediksi. Formula MAE adalah:
+#### **2. Mean Absolute Error (MAE)**
+
+MAE menghitung rata-rata dari nilai absolut selisih antara rating asli dan prediksi. Formula MAE adalah:
 
 $$
 \text{MAE} = \frac{1}{n} \sum_{i=1}^n |y_i - \hat{y}_i|
@@ -364,7 +409,18 @@ Akar Kuadrat: Terakhir, kita ambil akar kuadrat dari hasil rata-rata selisih kua
 
 ### Hasil Evaluasi Proyek
 
-Setelah dilakukan evaluasi pada data validasi, diperoleh hasil:
+Setelah dilakukan pada evaluasi model Content-Based Recommendation menghasilkan:
+
+* Average Genre Precision@K: 1.0000
+* Average Precision@K: 0.0479
+* Average Recall@K: 0.0341
+* Average F1@K: 0.0244
+
+Pada metrik pertama digunakan untuk mengukur apakah sistem rekomendasi berhasil menyarankan anime yang memiliki genre yang sama dengan anime query. Dan ketiga metrik lainnya digunakan untuk mengevaluasi sejauh mana sistem rekomendasi mampu menyarankan anime yang relevan menurut preferensi pengguna. Relevansi diukur berdasarkan apakah anime yang direkomendasikan juga diberi rating tinggi oleh user yang sama. Nilai Precision@K menunjukkan proporsi anime relevan dalam K rekomendasi teratas, Recall@K mengukur proporsi anime relevan yang berhasil ditemukan, dan F1@K adalah harmonisasi antara precision dan recall.
+
+Sistem rekomendasi menunjukkan kesesuaian genre yang sangat baik (Precision genre = 1.0), yang berarti sistem berhasil menyarankan anime-anime dengan genre yang mirip. Namun, tingkat relevansi berdasarkan rating pengguna masih rendah (Precision@10 < 0.05), mengindikasikan bahwa meskipun genre-nya cocok, belum tentu rekomendasinya dianggap relevan atau menarik oleh pengguna. Ini membuka peluang untuk perbaikan lebih lanjut, misalnya menggabungkan CBF dengan data interaksi pengguna (hybrid model).
+
+Sementara evaluasi model Collaborative Filtering pada data validasi, diperoleh hasil:
 
 * RMSE: 0.2747
 * MAE: 0.2192
